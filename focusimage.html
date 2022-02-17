@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>focusimages</title>
+    <style>
+        *{
+            margin:0;
+            bottom:0;
+            padding:0;
+            box-sizing: border-box;
+            list-style:none;
+            text-decoration: none;
+        }
+        body{
+            display:flex;
+            height:100vh;
+            align-items:center;
+            justify-content: center;
+            background-color: rgb(170,198,250);
+        }
+        .shell{
+            width: 800px;
+            height: 480px;
+            position: relative;
+            overflow-x:hidden;
+            border-radius: 5px;
+            border:10px #fff solid;
+            box-shadow:20px 30px 20px rgba(0,0,0,.5);
+        }
+        .images{
+            width: 300%;
+            height: 460px;
+            display:flex;
+            position:absolute;
+            left:0;
+            transition:.2s;
+        }
+        .img{
+            width:100%;
+            background-size:cover;
+        }
+        .img:nth-child(1){
+            background-image: url('images/main1.png');
+        }
+        .img:nth-child(2){
+            background-image: url('images/main2.png');
+        }
+        .img:nth-child(3){
+            background-image: url('images/main3.png');
+        }
+        .min_images{
+            display:flex;
+            justify-content: space-evenly;
+            position: absolute;
+            bottom:20px;
+            width: 40%;
+            z-index:999;
+            right:10%;
+        }
+        .min{
+           width: 68px;
+           height: 60px;
+           cursor:pointer;
+           border-radius:50%;
+           background-size: cover;
+           border:solid 5px rgba(255,255,255,0.5);
+           background-position:-20px 0;
+        }
+        .min:nth-child(1){
+            background-image: url('images/main1.png');
+        }
+        .min:nth-child(2){
+            background-image: url('images/main2.png');
+        }
+        .min:nth-child(3){
+            background-image: url('images/main3.png');
+        }
+        .button{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display:flex;
+            justify-content: space-between;
+            user-select:none;
+        }
+        .button_l,
+        .button_r{
+            font-size: 50px;
+            background-color: rgba(160,190,255,0.7);
+            padding:0 20px;
+            line-height:480px;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <ul class="images">
+            <li class="img"></li>
+            <li class="img"></li>
+            <li class="img"></li>
+        </ul>
+        <ul class="min_images">
+            <li class="min"></li>
+            <li class="min"></li>
+            <li class="min"></li>
+        </ul>
+        <div class="button">
+            <div class="button_l">&lt</div>
+            <div class="button_r">&gt</div>
+        </div>
+    </div>
+</body>
+<script>
+    let left=document.querySelector(".button_l")
+    let right=document.querySelector(".button_r")
+    let min=document.querySelectorAll(".min")
+    let images=document.querySelector(".images")
+    let index=0 //help to locate image
+    let time  //set the timer
+    // use index to calculate and locate the images
+    function position(){
+       images.style.left=(index * -100)+"%"
+    }
+    //when index is larger than the number of images -1, index should be set to 0 or add 1;
+    function add(){
+        if(index >=min.length-1){
+            index=0
+        }else{
+            index++
+        }
+    }
+    // when index is less than one, index should be set as the largest one, which is the number of images minus 1,
+    // or index should minus 1;
+    function desc(){
+        if(index<1){
+            index=min.length-1
+        }else{
+            index--
+        }
+    }
+    //index should add 1 every 3 seconds and use add() and desc() to limit the index in the available range
+    //position is used to locate the image
+    function timer(){
+        time=setInterval(()=>{
+            index++
+            desc()
+            add()
+            position()
+        },3000)
+    }
+    //when click left button, images moves 100% width to the next image on the right side
+    left.addEventListener('click',()=>{
+        desc()
+        position()
+        clearInterval(time)
+        timer()
+    })
+    //when click right button, show the next image on the left hand side
+    right.addEventListener('click',()=>{
+        add()
+        position()
+        clearInterval(time)
+        timer()
+    })
+    //use min images to control the location of images
+    for(let i =0; i<min.length;i++){
+        min[i].addEventListener('click',()=>{
+            index=i
+            position()
+            clearInterval(time)
+            timer()
+        })
+    }
+    // images changed every 3 second
+    timer()
+</script>
+</html>
